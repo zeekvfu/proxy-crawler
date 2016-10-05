@@ -79,7 +79,7 @@ class kuaidaili(Spider):
             elements = proxy_record.xpath(u'td[@data-title="PORT"]/text()').extract()
             if len(elements) != 1:
                 return
-            item['port'] = elements[0]
+            item['port'] = int(elements[0])
             # protocol
             elements = proxy_record.xpath(u'td[@data-title="类型"]/text()').extract()
             if len(elements) != 1:
@@ -95,11 +95,6 @@ class kuaidaili(Spider):
             if len(elements) != 1:
                 return
             item['location'] = elements[0]
-            # response_delay_in_ms
-            elements = proxy_record.xpath(u'td[@data-title="响应速度"]/text()').extract()
-            if len(elements) != 1:
-                return
-            item['response_delay_in_ms'] = elements[0]
             # validation_time
             elements = proxy_record.xpath(u'td[@data-title="最后验证时间"]/text()').extract()
             if len(elements) != 1:

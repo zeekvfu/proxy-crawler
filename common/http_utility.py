@@ -147,9 +147,9 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
         logger.debug("get_html_content(): proxy_pair\t%s" % json.dumps(proxy_pair, ensure_ascii=False))
         proxy_dict = {}
         proxy_dict[proxy_pair[0]] = proxy_pair[1]
-        proxy = urllib.request.ProxyHandler(proxy_dict)
-        auth = urllib.request.HTTPBasicAuthHandler()
-        opener = urllib.request.build_opener(proxy, auth, urllib.request.HTTPHandler, urllib.request.HTTPSHandler)
+        proxy_handler = urllib.request.ProxyHandler(proxy_dict)
+        auth_handler = urllib.request.HTTPBasicAuthHandler()
+        opener = urllib.request.build_opener(proxy_handler, auth_handler, urllib.request.HTTPHandler, urllib.request.HTTPSHandler)
         urllib.request.install_opener(opener)
     # 伪造 HTTP request header
     _headers = {}
@@ -175,9 +175,11 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
             # ms 级的时间差
             time_delta_in_ms = (time.time() - start_timestamp)*1000
             logger.debug("get_html_content(): after HTTPResponse.read() ...")
+            encodings = encoding_list
             encoding = response.headers.get_content_charset()
             logger.debug("get_html_content(): encoding\t%s" % encoding)
-            encodings = merge_list_preserving_order([encoding_map.get(encoding, encoding)], encoding_list)
+            if encoding is not None:
+                encodings = merge_list_preserving_order([encoding_map.get(encoding, encoding)], encoding_list)
             logger.debug("get_html_content(): encodings\t%s" % ', '.join(encodings))
             for encoding in encodings:
                 html_content = decode(logger, content, encoding)
@@ -199,11 +201,6 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
             get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
     except http.client.InvalidURL:
         logger.error("get_html_content(): http.client.InvalidURL\t%s" % url)
-    # 由 http.client.HTTPResponse 的 read() 方法产生
-    except http.client.IncompleteRead:
-        logger.error("get_html_content(): http.client.IncompleteRead\t%s" % url)
-        if retry > 0:
-            get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
     except http.client.BadStatusLine:
         logger.error("get_html_content(): http.client.BadStatusLine")
         if retry > 0:
@@ -215,6 +212,13 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
         formatted_url = format_url(url)
         logger.error("get_html_content(): formatted URL\t\t%s" % formatted_url)
         get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
+    except TypeError:
+        logger.error("get_html_content(): TypeError\t%s" % url)
+    # 由 http.client.HTTPResponse 的 read() 方法产生
+    except http.client.IncompleteRead:
+        logger.error("get_html_content(): http.client.IncompleteRead\t%s" % url)
+        if retry > 0:
+            get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
     return
 
 

@@ -17,11 +17,13 @@ FEED_EXPORT_FIELDS = [
         "port", 
         "protocol", 
         "anonymity", 
-        "request_type", 
+        "support_request_type", 
         "location", 
         "sp", 
-        "response_delay_in_ms", 
-        "available_time", 
+        "site_1_delay", 
+        "site_2_delay", 
+        "site_3_delay", 
+        "site_4_delay", 
         "validation_time", 
         "source"
         ]

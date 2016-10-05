@@ -15,6 +15,7 @@ def get_script_dir():
 
 
 # 从 sequence 中随机获取一个元素
+# use `random.choice()` instead
 def random_elem(l):
     if l is None or len(l) == 0:
         return

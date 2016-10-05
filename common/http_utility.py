@@ -3,12 +3,14 @@
 # http_utility.py
 
 
+import random
 import json
 import time
 import socket
 import http.client
 import urllib.parse, urllib.request, urllib.error
-from common.utility import merge_list_preserving_order, random_elem
+
+from common.utility import merge_list_preserving_order
 from common.codec import encoding_map, encoding_list, decode
 
 
@@ -217,7 +219,7 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
 
 
 if __name__ == '__main__':
-    result = random_elem(user_agent_list)
+    result = random.choice(user_agent_list)
     print(result)
 
     result = get_homepage("https://www.zhihu.com/question/19861840")

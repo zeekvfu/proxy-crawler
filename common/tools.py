@@ -3,9 +3,11 @@
 # tools.py
 
 
+import random
 import json
 from bs4 import BeautifulSoup
-from common.utility import random_elem, get_logger
+
+from common.utility import get_logger
 from common.http_utility import get_homepage, user_agent_list, get_html_content
 
 
@@ -19,7 +21,7 @@ def ip_location_inquiry(logger, ip):
             'ip': ip
             }
     referer = get_homepage(url)
-    user_agent = random_elem(user_agent_list)
+    user_agent = random.choice(user_agent_list)
 
     result = get_html_content(logger, url, post_data, referer, user_agent)
     if result is None:
@@ -50,7 +52,7 @@ def get_response_delay(logger, url, protocol, ip, port, retry=4):
     if proxy is None or len(proxy) != 2:
         return
     logger.debug("get_response_delay(): proxy URL\t%s" % proxy[1])
-    _user_agent = random_elem(user_agent_list)
+    _user_agent = random.choice(user_agent_list)
     l = []
     for index in range(retry, 0, -1):
         logger.debug("get_response_delay(): index\t%d" % index)

@@ -3,6 +3,7 @@
 # http_utility.py
 
 
+import json
 import time
 import socket
 import http.client
@@ -135,28 +136,35 @@ def sleep(interval):
 
 
 # 解析得到 URL 对应的 HTML
-def get_html_content(logger, url, post_data=None, referer=None, user_agent=None, proxy=None, sleep_interval=3, retry=3):
-    logger.debug("get_html_content(): retry\t%d" % retry)
+def get_html_content(logger, url, post_data=None, referer=None, user_agent=None, proxy_pair=None, sleep_interval=3, retry=3):
+    logger.debug("get_html_content(): retry\t\t%d" % retry)
     retry = retry-1
     start_timestamp = time.time()
     # 使用 HTTP/HTTPS 代理
-    if proxy is not None:
-        _proxy = urllib.request.ProxyHandler(proxy)
+    if proxy_pair is not None and len(proxy_pair) == 2:
+        logger.debug("get_html_content(): proxy_pair\t%s" % json.dumps(proxy_pair, ensure_ascii=False))
+        proxy_dict = {}
+        proxy_dict[proxy_pair[0]] = proxy_pair[1]
+        proxy = urllib.request.ProxyHandler(proxy_dict)
         auth = urllib.request.HTTPBasicAuthHandler()
-        opener = urllib.request.build_opener(_proxy, auth, urllib.request.HTTPHandler)
+        opener = urllib.request.build_opener(proxy, auth, urllib.request.HTTPHandler, urllib.request.HTTPSHandler)
         urllib.request.install_opener(opener)
     # 伪造 HTTP request header
     _headers = {}
+    post_data_binary = None
     if post_data is not None:
-        post_data = urllib.parse.urlencode(post_data).encode('utf8')
-    req = urllib.request.Request(url, data=post_data, headers=_headers)
+        logger.debug("get_html_content(): post_data\t%s" % json.dumps(post_data, ensure_ascii=False))
+        post_data_binary = urllib.parse.urlencode(post_data).encode('utf8')
+    req = urllib.request.Request(url, data=post_data_binary, headers=_headers)
     if referer is not None and len(referer) != 0:
+        logger.debug("get_html_content(): Referer\t%s" % referer)
         req.add_header('Referer', referer)
     if user_agent is not None and len(user_agent) != 0:
+        logger.debug("get_html_content(): User-Agent\t%s" % user_agent)
         req.add_header('User-Agent', user_agent)
     try:
         logger.debug("get_html_content(): before urlopen() ...\t%s" % url)
-        with urllib.request.urlopen(req, timeout=10) as response:
+        with urllib.request.urlopen(req, timeout=30) as response:
             logger.debug("get_html_content(): after urlopen() ...")
             if response.status != 200:
                 logger.info("get_html_content(): response.status\t%d" % response.status)
@@ -172,8 +180,7 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
             for encoding in encodings:
                 html_content = decode(logger, content, encoding)
                 if html_content is not None:
-                    break
-            return time_delta_in_ms, html_content
+                    return time_delta_in_ms, html_content
     except urllib.error.HTTPError as e:
         logger.error("get_html_content(): urllib.error.HTTPError\t%s\t%s\t%s\t%s" % (url, e.getcode(), e.errno, e.reason))
         # if e.getcode() == 403 or e.getcode() == 404 or e.getcode() == 502:
@@ -182,30 +189,30 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
     except socket.timeout:
         logger.error("get_html_content(): socket.timeout\t%s" % url)
         if retry > 0:
-            get_html_content(logger, url, post_data, referer, user_agent, proxy, sleep_interval, retry)
+            get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
     except ConnectionResetError:
         logger.error("get_html_content(): ConnectionResetError")
         if retry > 0:
             sleep(sleep_interval)
-            get_html_content(logger, url, post_data, referer, user_agent, proxy, sleep_interval, retry)
+            get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
     except http.client.InvalidURL:
         logger.error("get_html_content(): http.client.InvalidURL\t%s" % url)
     # 由 http.client.HTTPResponse 的 read() 方法产生
     except http.client.IncompleteRead:
         logger.error("get_html_content(): http.client.IncompleteRead\t%s" % url)
         if retry > 0:
-            get_html_content(logger, url, post_data, referer, user_agent, proxy, sleep_interval, retry)
+            get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
     except http.client.BadStatusLine:
         logger.error("get_html_content(): http.client.BadStatusLine")
         if retry > 0:
             sleep(sleep_interval)
-            get_html_content(logger, url, post_data, referer, user_agent, proxy, sleep_interval, retry)
+            get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
     # URL 中含有特殊字符（eg. 空格、中文）
     except UnicodeEncodeError as e:
         logger.error("get_html_content(): UnicodeEncodeError\t%s\t%s\t%s" % (url, e.encoding, e.reason))
         formatted_url = format_url(url)
         logger.error("get_html_content(): formatted URL\t\t%s" % formatted_url)
-        get_html_content(logger, url, post_data, referer, user_agent, proxy, sleep_interval, retry)
+        get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
     return
 
 

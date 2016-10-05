@@ -131,9 +131,9 @@ def format_url(url):
 
 # 程序 sleep 一段时间
 def sleep(interval):
-    if type(interval) is int:
+    if isinstance(interval, int):
         time.sleep(interval)
-    elif type(interval) is tuple and len(interval) == 2:
+    elif isinstance(interval, tuple) and len(interval) == 2:
         time.sleep(random.randint(*interval))
 
 

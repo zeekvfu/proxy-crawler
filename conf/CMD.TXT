@@ -1,0 +1,18 @@
+版本：
+Python 3.4
+Scrapy 1.1.3
+
+
+cd $Python/proxy-crawler
+PYTHONPATH=$(pwd) python3 common/tools.py
+
+
+# kuaidaili
+cd $Python/proxy-crawler
+rm -rf log/kuaidaili*.log output/kuaidaili*.csv
+PYTHONPATH=$(pwd) SCRAPY_SETTINGS_MODULE=proxy_service_provider.kuaidaili.settings scrapy crawl kuaidaili
+PYTHONPATH=$(pwd) SCRAPY_SETTINGS_MODULE=proxy_service_provider.kuaidaili.settings scrapy crawl kuaidaili -a start_date=20161001
+
+
+
+

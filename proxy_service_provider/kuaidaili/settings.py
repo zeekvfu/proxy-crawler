@@ -39,6 +39,7 @@ LOG_FILE = 'log/%s.%s.log' % (BOT_NAME, time.strftime('%Y-%m-%d %H:%M:%S'))
 
 
 ITEM_PIPELINES = {
+        'proxy_service_provider.kuaidaili.pipelines.ETL': 0
         }
 
 

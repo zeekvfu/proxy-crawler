@@ -8,7 +8,7 @@ import time
 from scrapy.exceptions import DropItem
 
 from common.utility import load_json_preserving_order, get_logger
-from common.http_tools import get_response_delay
+from common.http_tools import get_response_delay, set_ip_location
 
 
 class ETL(object):
@@ -22,11 +22,10 @@ class ETL(object):
         self.bot_name = bot_name
         # script_dir = get_script_dir.__func__()
         script_dir = os.path.dirname(os.path.realpath(__file__))
-        self.logger = get_logger("%s/../../log/%s.pipeline_ETL.%s.log" % (script_dir, self.bot_name, time.strftime('%Y-%m-%d %H:%M:%S')))
+        self.logger = get_logger("%s/../../log/%s.ETL.%s.log" % (script_dir, self.bot_name, time.strftime('%Y-%m-%d_%H:%M:%S')))
         self.logger.debug("__init__(): start ...")
-        config = load_json_preserving_order('%s/../../conf/config.json' % script_dir)
-        self.http_sites = config['delay_testing_sites']['http'][0:4]
-        self.https_sites = config['delay_testing_sites']['https'][0:4]
+        config = load_json_preserving_order('%s/../../conf/proxy_test.config.json' % script_dir)
+        self.testing_websites = config['testing_websites']
 
 
     @classmethod
@@ -49,15 +48,28 @@ class ETL(object):
     def process_item(self, item, spider):
         self.logger.debug("process_item(): start ...")
         item['anonymity'] = ETL.normalize_anonymity(item['anonymity'])
+
+        # protocol
         protocol = item['protocol'].strip().upper()
-        sites = None
-        if protocol == 'HTTP':
-            sites = self.http_sites
-        elif protocol == 'HTTPS':
-            sites = self.https_sites
+        if protocol != 'HTTP' and protocol != 'HTTPS':
+            raise DropItem("process_item(): protocol %s" % protocol)
+        item['protocol'] = protocol
+
+        # 代理是否可用
+        flag = False
+        sites = self.testing_websites[protocol.lower()][0:4]
         if sites is not None:
-            for i in range(1, len(sites)+1):
+            for i in range(0, len(sites)):
                 item['site_%d_delay' % i] = get_response_delay(self.logger, sites[i], protocol, item['ip'], item['port'])
+                if item['site_%d_delay' % i] > 0:
+                    flag = True
+        if not flag:
+            raise DropItem("process_item(): proxy not available!")
+
+        location = set_ip_location(item['ip'], item['location'])
+        if location is not None:
+            item['location'] = location
+
         self.logger.debug("process_item(): finish ...")
         return item
 

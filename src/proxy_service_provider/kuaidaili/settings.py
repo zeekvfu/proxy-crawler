@@ -5,8 +5,10 @@
 
 import os
 import time
+from common.file_utility import write_to_file
 
 
+# 获取脚本所在的路径
 def get_script_dir():
     return os.path.dirname(os.path.realpath(__file__))
 
@@ -19,6 +21,7 @@ NEWSPIDER_MODULE = 'proxy_service_provider.kuaidaili.spiders'
 
 
 FEED_FORMAT = 'csv'
+# 尽量提取、保留所有字段
 FEED_EXPORT_FIELDS = [
         "protocol", 
         "ip", 
@@ -32,7 +35,12 @@ FEED_EXPORT_FIELDS = [
         "validation_time", 
         "source"
         ]
-FEED_URI = script_dir + '/../../../output/%(name)s.%(time)s.csv'
+
+# FEED_URI = script_dir + '/../../../output/%(name)s.%(time)s.csv'
+FEED_URI = '%s/../../../output/%s.%s.csv' % (script_dir, BOT_NAME, time.strftime('%Y-%m-%d_%H:%M:%S'))
+FEED_URI = os.path.realpath(FEED_URI)
+write_to_file('%s/../../../output/proxy_crawler.output' % script_dir, FEED_URI + '\n')
+
 CSV_DELIMITER = '\t'
 FEED_EXPORTERS = {
         'csv': '_scrapy.exporters.CsvOptionRespectingItemExporter'

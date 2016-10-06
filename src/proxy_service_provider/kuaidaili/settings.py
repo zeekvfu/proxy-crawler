@@ -3,7 +3,14 @@
 # settings.py
 
 
+import os
 import time
+
+
+def get_script_dir():
+    return os.path.dirname(os.path.realpath(__file__))
+
+script_dir = get_script_dir()
 
 
 BOT_NAME = 'kuaidaili_spider'
@@ -25,7 +32,7 @@ FEED_EXPORT_FIELDS = [
         "validation_time", 
         "source"
         ]
-FEED_URI = 'output/%(name)s.%(time)s.csv'
+FEED_URI = script_dir + '/../../../output/%(name)s.%(time)s.csv'
 CSV_DELIMITER = '\t'
 FEED_EXPORTERS = {
         'csv': '_scrapy.exporters.CsvOptionRespectingItemExporter'
@@ -33,7 +40,7 @@ FEED_EXPORTERS = {
 
 
 LOG_LEVEL = 'INFO'
-LOG_FILE = 'log/%s.%s.log' % (BOT_NAME, time.strftime('%Y-%m-%d_%H:%M:%S'))
+LOG_FILE = '%s/../../../log/%s.%s.log' % (script_dir, BOT_NAME, time.strftime('%Y-%m-%d_%H:%M:%S'))
 
 
 ITEM_PIPELINES = {

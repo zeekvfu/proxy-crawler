@@ -27,7 +27,7 @@ class kuaidaili(Spider):
     name = 'kuaidaili'
     base_url = "http://www.kuaidaili.com"
     starting_page = "%s/free/" % (base_url)
-    logger = get_logger("%s/../../../log/%s.log" % (get_script_dir.__func__(), name))
+    logger = get_logger("%s/../../../../log/%s.log" % (get_script_dir.__func__(), name))
 
 
     def __init__(self, start_date=None, *args, **kwargs):

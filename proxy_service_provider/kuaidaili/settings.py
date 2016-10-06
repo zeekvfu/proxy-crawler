@@ -13,9 +13,11 @@ NEWSPIDER_MODULE = 'proxy_service_provider.kuaidaili.spiders'
 
 FEED_FORMAT = 'csv'
 FEED_EXPORT_FIELDS = [
+        "protocol", 
         "ip", 
         "port", 
-        "protocol", 
+        "user_name", 
+        "password", 
         "anonymity", 
         "support_request_type", 
         "location", 

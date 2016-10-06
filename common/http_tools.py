@@ -7,13 +7,14 @@ import random
 import json
 import http.client
 import urllib.error
+import IP
 from bs4 import BeautifulSoup
 
 from common.utility import get_logger
 from common.http_utility import get_homepage, user_agent_list, get_html_content
 
 
-# 获取 IP 归属地（使用的是 ipip.net 的数据）
+# 查询 IP 归属地（使用的是 ipip.net 的数据）
 def ip_location_inquiry(logger, ip):
     logger.debug("ip_location_inquiry(): start ...")
     if ip is None or len(ip) == 0:
@@ -27,7 +28,7 @@ def ip_location_inquiry(logger, ip):
     user_agent = random.choice(user_agent_list)
 
     result = get_html_content(logger, url, post_data, referer, user_agent)
-    if result[0] == -1:
+    if result[0] == -1 or result[1] is None:
         return
     html_soup = BeautifulSoup(result[1], "html.parser")
     l = html_soup.select('tr > td[colspan="3"] > div > span[id="myself"]')
@@ -36,16 +37,24 @@ def ip_location_inquiry(logger, ip):
     return
 
 
+# 查询 IP 归属地。如果查不到该 IP 的话，则使用原来的归属地
+def set_ip_location(ip, old_location=None):
+    new_location = IP.find(ip)
+    if new_location is None:
+        new_location = old_location
+    return new_location
+
+
 def generate_proxy_url(protocol, ip, port):
-    _protocol = protocol.lower()
-    return "%s://%s:%d" % (_protocol, ip, port)
+    protocol = protocol.lower()
+    return "%s://%s:%d" % (protocol, ip, port)
 
 
 def generate_proxy_pair(protocol, ip, port):
-    _protocol = protocol.lower()
-    if _protocol != 'http' and _protocol != 'https':
+    protocol = protocol.lower()
+    if protocol != 'http' and protocol != 'https':
         return
-    return _protocol, generate_proxy_url(protocol, ip, port)
+    return protocol, generate_proxy_url(protocol, ip, port)
 
 
 # 获取 proxy 的响应延迟（单位是 ms）
@@ -53,7 +62,7 @@ def get_response_delay(logger, url, protocol, ip, port, retry=4):
     logger.debug("get_response_delay(): start ...")
     proxy = generate_proxy_pair(protocol, ip, port)
     if proxy is None or len(proxy) != 2:
-        return
+        return -1
     logger.debug("get_response_delay(): proxy URL\t%s" % proxy[1])
     _user_agent = random.choice(user_agent_list)
     l = []
@@ -71,6 +80,7 @@ def get_response_delay(logger, url, protocol, ip, port, retry=4):
     logger.debug("get_response_delay(): response delay records\t%s" % json.dumps(l, ensure_ascii=False))
     if len(l) > 0:
         return sum(l)/len(l)
+    return -1
 
 
 if __name__ == '__main__':

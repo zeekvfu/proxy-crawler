@@ -62,7 +62,7 @@ def get_response_delay(logger, url, protocol, ip, port, retry=4):
     logger.debug("get_response_delay(): start ...")
     proxy = generate_proxy_pair(protocol, ip, port)
     if proxy is None or len(proxy) != 2:
-        return -1
+        return
     logger.debug("get_response_delay(): proxy URL\t%s" % proxy[1])
     _user_agent = random.choice(user_agent_list)
     l = []
@@ -80,7 +80,7 @@ def get_response_delay(logger, url, protocol, ip, port, retry=4):
     logger.debug("get_response_delay(): response delay records\t%s" % json.dumps(l, ensure_ascii=False))
     if len(l) > 0:
         return sum(l)/len(l)
-    return -1
+    return
 
 
 if __name__ == '__main__':

@@ -22,10 +22,6 @@ FEED_EXPORT_FIELDS = [
         "support_request_type", 
         "location", 
         "sp", 
-        "site_0_delay", 
-        "site_1_delay", 
-        "site_2_delay", 
-        "site_3_delay", 
         "validation_time", 
         "source"
         ]

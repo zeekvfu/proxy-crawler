@@ -103,7 +103,13 @@ class kuaidaili(Spider):
             if item['validation_time'] < self.start_date:
                 flag = False
                 break
+
             item['source'] = self.name
+            item['user_name'] = ''
+            item['password'] = ''
+            item['support_request_type'] = ''
+            item['sp'] = ''
+
             yield item
         if flag:
             yield self.turn_to_next_page(response)

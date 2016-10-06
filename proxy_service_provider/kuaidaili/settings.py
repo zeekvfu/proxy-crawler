@@ -22,10 +22,10 @@ FEED_EXPORT_FIELDS = [
         "support_request_type", 
         "location", 
         "sp", 
+        "site_0_delay", 
         "site_1_delay", 
         "site_2_delay", 
         "site_3_delay", 
-        "site_4_delay", 
         "validation_time", 
         "source"
         ]
@@ -37,7 +37,7 @@ FEED_EXPORTERS = {
 
 
 LOG_LEVEL = 'INFO'
-LOG_FILE = 'log/%s.%s.log' % (BOT_NAME, time.strftime('%Y-%m-%d %H:%M:%S'))
+LOG_FILE = 'log/%s.%s.log' % (BOT_NAME, time.strftime('%Y-%m-%d_%H:%M:%S'))
 
 
 ITEM_PIPELINES = {

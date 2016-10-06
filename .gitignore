@@ -1,8 +1,10 @@
 __pycache__
-*.pyc
-output/*
-log/*
+output
+log
 
+*.pyc
 test.py
+conf/proxy_test.config.json
+src/proxy_service_provider/kuaidaili/pipelines.heavy.py
 
 

@@ -7,6 +7,7 @@ import os
 import json
 import random
 import logging
+
 from collections import OrderedDict
 
 
@@ -24,17 +25,14 @@ def random_elem(l):
     return l[index]
 
 
+# faltten a list
+def flatten_list(l):
+    return [ item for sublist in l for item in sublist ]
+
+
 # 将两个 list 合并起来，并且保持原来元素的相对顺序
 def merge_list_preserving_order(l1, l2):
     return list(OrderedDict.fromkeys(l1 + l2))
-
-
-# 读取 JSON 配置文件
-def load_json_preserving_order(file_name, open_mode='r'):
-    with open(file_name, encoding='utf-8', mode=open_mode) as f:
-        content = f.read()
-        # 保持 JSON 文件里 dict 原来的顺序
-        return json.loads(content, object_pairs_hook=OrderedDict)
 
 
 def get_logger(log_file):

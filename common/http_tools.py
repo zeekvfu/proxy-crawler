@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # coding: utf-8
-# tools.py
+# http_tools.py
 
 
 import random
@@ -74,7 +74,7 @@ def get_response_delay(logger, url, protocol, ip, port, retry=4):
 
 
 if __name__ == '__main__':
-    logger = get_logger('/tmp/tools.log')
+    logger = get_logger('/tmp/http_tools.log')
     logger.info("****************************************************************************************************")
     logger.info("start ...")
 

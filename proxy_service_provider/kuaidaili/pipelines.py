@@ -8,7 +8,7 @@ import time
 from scrapy.exceptions import DropItem
 
 from common.utility import load_json_preserving_order, get_logger
-from common.tools import get_response_delay
+from common.http_tools import get_response_delay
 
 
 class ETL(object):

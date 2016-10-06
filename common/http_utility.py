@@ -138,6 +138,8 @@ def sleep(interval):
 
 
 # 解析得到 URL 对应的 HTML
+# 返回值：成功，[delay, content]；失败，[-1, exception instance]
+# 说明：之所以要返回异常类型，是因为有时侯外层调用者 caller 需要根据异常类型，做针对性地处理
 def get_html_content(logger, url, post_data=None, referer=None, user_agent=None, proxy_pair=None, sleep_interval=3, retry=3):
     logger.debug("get_html_content(): retry\t\t%d" % retry)
     retry = retry-1
@@ -188,38 +190,46 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
     except urllib.error.HTTPError as e:
         logger.error("get_html_content(): urllib.error.HTTPError\t%s\t%s\t%s\t%s" % (url, e.getcode(), e.errno, e.reason))
         # if e.getcode() == 403 or e.getcode() == 404 or e.getcode() == 502:
+        return -1, e
     except urllib.error.URLError as e:
         logger.error("get_html_content(): urllib.error.URLError\t%s\t%s\t%s" % (url, e.errno, e.reason))
-    except socket.timeout:
+        return -1, e
+    except socket.timeout as e:
         logger.error("get_html_content(): socket.timeout\t%s" % url)
         if retry > 0:
             get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
-    except ConnectionResetError:
+        return -1, e
+    except ConnectionResetError as e:
         logger.error("get_html_content(): ConnectionResetError")
         if retry > 0:
             sleep(sleep_interval)
             get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
-    except http.client.InvalidURL:
+        return -1, e
+    except http.client.InvalidURL as e:
         logger.error("get_html_content(): http.client.InvalidURL\t%s" % url)
-    except http.client.BadStatusLine:
+        return -1, e
+    except http.client.BadStatusLine as e:
         logger.error("get_html_content(): http.client.BadStatusLine")
         if retry > 0:
             sleep(sleep_interval)
             get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
+        return -1, e
     # URL 中含有特殊字符（eg. 空格、中文）
     except UnicodeEncodeError as e:
         logger.error("get_html_content(): UnicodeEncodeError\t%s\t%s\t%s" % (url, e.encoding, e.reason))
         formatted_url = format_url(url)
         logger.error("get_html_content(): formatted URL\t\t%s" % formatted_url)
         get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
-    except TypeError:
+        return -1, e
+    except TypeError as e:
         logger.error("get_html_content(): TypeError\t%s" % url)
+        return -1, e
     # 由 http.client.HTTPResponse 的 read() 方法产生
-    except http.client.IncompleteRead:
+    except http.client.IncompleteRead as e:
         logger.error("get_html_content(): http.client.IncompleteRead\t%s" % url)
         if retry > 0:
             get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
-    return
+        return -1, e
 
 
 if __name__ == '__main__':

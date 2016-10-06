@@ -5,6 +5,8 @@
 
 import random
 import json
+import http.client
+import urllib.error
 from bs4 import BeautifulSoup
 
 from common.utility import get_logger
@@ -13,6 +15,7 @@ from common.http_utility import get_homepage, user_agent_list, get_html_content
 
 # 获取 IP 归属地（使用的是 ipip.net 的数据）
 def ip_location_inquiry(logger, ip):
+    logger.debug("ip_location_inquiry(): start ...")
     if ip is None or len(ip) == 0:
         return
 
@@ -24,7 +27,7 @@ def ip_location_inquiry(logger, ip):
     user_agent = random.choice(user_agent_list)
 
     result = get_html_content(logger, url, post_data, referer, user_agent)
-    if result is None:
+    if result[0] == -1:
         return
     html_soup = BeautifulSoup(result[1], "html.parser")
     l = html_soup.select('tr > td[colspan="3"] > div > span[id="myself"]')
@@ -57,8 +60,12 @@ def get_response_delay(logger, url, protocol, ip, port, retry=4):
     for index in range(retry, 0, -1):
         logger.debug("get_response_delay(): index\t%d" % index)
         result = get_html_content(logger, url, user_agent=_user_agent, proxy_pair=proxy)
-        if result is None:
-            continue
+        if result[0] == -1:
+            logger.debug("get_response_delay(): exception type\t%s" % type(result[1]))
+            if isinstance(result[1], (urllib.error.HTTPError, urllib.error.URLError, http.client.InvalidURL, TypeError)):
+                break
+            else:
+                continue
         l.append(result[0])
         logger.debug("get_response_delay(): index: %d\tresponse delay: %f" % (index, result[0]))
     logger.debug("get_response_delay(): response delay records\t%s" % json.dumps(l, ensure_ascii=False))

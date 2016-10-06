@@ -183,10 +183,13 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
             if encoding is not None:
                 encodings = merge_list_preserving_order([encoding_map.get(encoding, encoding)], encoding_list)
             logger.debug("get_html_content(): encodings\t%s" % ', '.join(encodings))
+            html_content = None
             for encoding in encodings:
                 html_content = decode(logger, content, encoding)
                 if html_content is not None:
-                    return time_delta_in_ms, html_content
+                    break
+            # 最终返回值有可能为：[time_delta_in_ms, None]
+            return time_delta_in_ms, html_content
     except urllib.error.HTTPError as e:
         logger.error("get_html_content(): urllib.error.HTTPError\t%s\t%s\t%s\t%s" % (url, e.getcode(), e.errno, e.reason))
         # if e.getcode() == 403 or e.getcode() == 404 or e.getcode() == 502:

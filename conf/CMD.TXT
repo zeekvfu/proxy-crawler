@@ -10,12 +10,12 @@ pip3 install -U Scrapy beautifulsoup4 17monip
 
 
 
-cd $Python/proxy-crawler/src
+cd $Proxy/proxy-crawler/src
 PYTHONPATH=$(pwd) python3 common/http_tools.py
 
 
 # kuaidaili
-cd $Python/proxy-crawler/src
+cd $Proxy/proxy-crawler/src
 rm -rf ../log/kuaidaili*.log ../output/kuaidaili*.csv
 PYTHONPATH=$(pwd) SCRAPY_SETTINGS_MODULE=proxy_service_provider.kuaidaili.settings scrapy crawl kuaidaili
 PYTHONPATH=$(pwd) SCRAPY_SETTINGS_MODULE=proxy_service_provider.kuaidaili.settings scrapy crawl kuaidaili -a start_date=20161001

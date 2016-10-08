@@ -4,7 +4,6 @@
 
 
 import random
-import json
 import http.client
 import urllib.error
 import IP
@@ -15,7 +14,7 @@ from common.http_utility import get_homepage, user_agent_list, get_html_content
 
 
 # 查询 IP 归属地（使用的是 ipip.net 的数据）
-def ip_location_inquiry(logger, ip):
+def inquire_ip_location(logger, ip):
     logger.debug("ip_location_inquiry(): start ...")
     if ip is None or len(ip) == 0:
         return
@@ -38,7 +37,7 @@ def ip_location_inquiry(logger, ip):
 
 
 # 查询 IP 归属地。如果查不到该 IP 的话，则使用原来的归属地
-def set_ip_location(ip, old_location=None):
+def ipip_inquire_location(ip, old_location=None):
     new_location = IP.find(ip)
     if new_location is None:
         new_location = old_location
@@ -77,9 +76,11 @@ def get_response_delay(logger, url, protocol, ip, port, retry=4):
                 continue
         l.append(result[0])
         logger.debug("get_response_delay(): index: %d\tresponse delay: %f" % (index, result[0]))
-    logger.debug("get_response_delay(): response delay records\t%s" % json.dumps(l, ensure_ascii=False))
+    logger.debug("get_response_delay(): response delay records\t%s" % str(l))
     if len(l) > 0:
-        return sum(l)/len(l)
+        average = sum(l)/len(l)
+        logger.debug("get_response_delay(): response delay average\t%f" % average)
+        return average
     return
 
 
@@ -89,7 +90,7 @@ if __name__ == '__main__':
     logger.info("start ...")
 
     ip = "205.252.220.20"
-    result = ip_location_inquiry(logger, ip)
+    result = inquire_ip_location(logger, ip)
     logger.info("%s\t%s" % (ip, result))
 
     # url = "https://www.baidu.com/"

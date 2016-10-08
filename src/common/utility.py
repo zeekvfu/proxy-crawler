@@ -25,6 +25,19 @@ def random_elem(l):
     return l[index]
 
 
+def empty_str_to_none(s):
+    if s is not None and len(s) == 0:
+        s = None
+    return s
+
+
+# 与 str() 方法的区别是，可以自定义将 None 转化成什么 str
+def obj_to_str(obj, none_to_what='null'):
+    if obj is None:
+        obj = none_to_what
+    return str(obj)
+
+
 # faltten a list
 def flatten_list(l):
     return [ item for sublist in l for item in sublist ]

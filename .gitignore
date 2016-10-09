@@ -4,7 +4,7 @@ log
 
 *.pyc
 test.py
-conf/proxy_test.config.json
+conf/CMD.TXT
 src/proxy_service_provider/kuaidaili/pipelines.heavy.py
 
 

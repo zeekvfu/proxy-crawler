@@ -7,6 +7,7 @@ import os
 import json
 import random
 import logging
+import itertools
 
 from collections import OrderedDict
 
@@ -43,12 +44,13 @@ def flatten_list(l):
     return [ item for sublist in l for item in sublist ]
 
 
-# 将两个 list 合并起来，并且保持原来元素的相对顺序
-def merge_list_preserving_order(l1, l2):
-    return list(OrderedDict.fromkeys(l1 + l2))
+# 将 list 合并起来，并且保持相对顺序（list 间相对顺序 + list 内元素相对顺序）
+def merge_list_preserving_order(*args):
+    result = itertools.chain(*args)
+    return list(OrderedDict.fromkeys(result))
 
 
-def get_logger(log_file):
+def get_logger(log_file, log_level=logging.DEBUG):
     _format = '%(asctime)s %(process)d %(thread)d %(levelname)s | %(message)s'
     formatter = logging.Formatter(_format)
 
@@ -57,7 +59,9 @@ def get_logger(log_file):
 
     logger = logging.getLogger(log_file)
     logger.addHandler(file_handler)
-    logger.setLevel(logging.DEBUG)
+    if isinstance(log_level, str):
+        log_level = eval(log_level)
+    logger.setLevel(log_level)
     return logger
 
 

@@ -14,24 +14,31 @@ from scrapy.selector import Selector
 
 from _scrapy.items import ProxyItem
 from common.utility import get_logger
-
-
+from common.file_utility import load_json_preserving_order
 
 
 class kuaidaili(Spider):
-    @staticmethod
-    def get_script_dir():
-        return os.path.dirname(os.path.realpath(__file__))
-
 
     name = 'kuaidaili'
     base_url = "http://www.kuaidaili.com"
     starting_page = "%s/free/" % (base_url)
-    logger = get_logger("%s/../../../../log/%s.log" % (get_script_dir.__func__(), name))
+
+
+    @classmethod
+    def get_script_dir(cls):
+        return os.path.dirname(os.path.realpath(__file__))
+
+
+    @property
+    def logger(self):
+        script_dir = self.get_script_dir()
+        config = load_json_preserving_order('%s/../../../../conf/proxy_crawler.config.json' % script_dir)
+        return get_logger("%s/../../../../log/%s.log" % (script_dir, self.name), config['log_level'])
 
 
     def __init__(self, start_date=None, *args, **kwargs):
         super(kuaidaili, self).__init__(*args, **kwargs)
+        self.start_date = None
         if start_date is None:
             self.start_date = (datetime.date.today() + datetime.timedelta(days=-1)).strftime('%Y-%m-%d')
         else:

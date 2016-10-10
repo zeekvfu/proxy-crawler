@@ -8,6 +8,7 @@ import json
 import random
 import logging
 import itertools
+import datetime
 
 from collections import OrderedDict
 
@@ -27,16 +28,44 @@ def random_elem(l):
 
 
 def empty_str_to_none(s):
-    if s is not None and len(s) == 0:
+    if s is not None and s == '':
         s = None
     return s
 
 
 # 与 str() 方法的区别是，可以自定义将 None 转化成什么 str
-def obj_to_str(obj, none_to_what='null'):
+def obj_to_str(obj, none_to_what='', datetime_format='%Y-%m-%d %H:%M:%S'):
+    result = None
     if obj is None:
-        obj = none_to_what
-    return str(obj)
+        result = none_to_what
+    elif isinstance(obj, datetime.datetime):
+        result = obj.strftime(datetime_format)
+    else:
+        result = str(obj)
+    return result
+
+
+def obj_to_db_field(obj):
+    result = None
+    if obj is None:
+        result = 'null'
+    elif isinstance(obj, str):
+        result = "'%s'" % obj
+    elif isinstance(obj, (bool, int, float)):
+        result = str(obj)
+    elif isinstance(obj, datetime.datetime):
+        s = obj_to_str(obj)
+        result = obj_to_db_field(s)
+    return result
+
+
+def obj_to_datetime(obj, datetime_format='%Y-%m-%d %H:%M:%S'):
+    result = None
+    if isinstance(obj, datetime.datetime):
+        result = obj
+    elif isinstance(obj, str):
+        result = datetime.datetime.strptime(obj, datetime_format)
+    return result
 
 
 # faltten a list
@@ -69,5 +98,7 @@ if __name__ == '__main__':
     print(__file__)
     print(os.path.realpath(__file__))
     print(get_script_dir())
+
+
 
 

@@ -10,7 +10,7 @@ import IP
 from bs4 import BeautifulSoup
 
 from common.utility import get_logger
-from common.http_utility import get_homepage, user_agent_list, get_html_content
+from common.http_utility import get_homepage, pc_browser_ua, get_html_content
 
 
 # 查询 IP 归属地（使用的是 ipip.net 的数据）
@@ -24,7 +24,7 @@ def inquire_ip_location(logger, ip):
             'ip': ip
             }
     referer = get_homepage(url)
-    user_agent = random.choice(user_agent_list)
+    user_agent = random.choice(pc_browser_ua)
 
     result = get_html_content(logger, url, post_data, referer, user_agent)
     if result[0] == -1 or result[1] is None:
@@ -63,7 +63,7 @@ def get_response_delay(logger, url, protocol, ip, port, retry=4):
     if proxy is None or len(proxy) != 2:
         return
     logger.debug("get_response_delay(): proxy URL\t%s" % proxy[1])
-    _user_agent = random.choice(user_agent_list)
+    _user_agent = random.choice(pc_browser_ua)
     l = []
     for index in range(retry, 0, -1):
         logger.debug("get_response_delay(): index\t%d" % index)
@@ -78,7 +78,7 @@ def get_response_delay(logger, url, protocol, ip, port, retry=4):
         logger.debug("get_response_delay(): index: %d\tresponse delay: %f" % (index, result[0]))
     logger.debug("get_response_delay(): response delay records\t%s" % str(l))
     if len(l) > 0:
-        average = sum(l)/len(l)
+        average = round(sum(l)/len(l), 1)
         logger.debug("get_response_delay(): response delay average\t%f" % average)
         return average
     return

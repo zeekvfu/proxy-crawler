@@ -14,7 +14,7 @@ from common.utility import merge_list_preserving_order
 from common.codec import encoding_map, encoding_list, decode
 
 
-user_agent_list = (
+pc_browser_ua = (
         "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36",
         "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36",
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36",
@@ -106,6 +106,8 @@ user_agent_list = (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36"
 )
 
+search_engine_ua = ()
+
 
 # 获取 URL 对应的 homepage
 def get_homepage(url):
@@ -176,6 +178,7 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
             content = response.read()
             # ms 级的时间差
             time_delta_in_ms = (time.time() - start_timestamp)*1000
+            time_delta_in_ms = round(time_delta_in_ms, 1)
             logger.debug("get_html_content(): after HTTPResponse.read() ...")
             encodings = encoding_list
             encoding = response.headers.get_content_charset()
@@ -236,7 +239,7 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
 
 
 if __name__ == '__main__':
-    result = random.choice(user_agent_list)
+    result = random.choice(pc_browser_ua)
     print(result)
 
     result = get_homepage("https://www.zhihu.com/question/19861840")

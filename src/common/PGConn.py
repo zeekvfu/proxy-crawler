@@ -7,7 +7,10 @@ import sys
 import psycopg2
 
 
+
+
 class PGConn:
+
     def __init__(self, dbhost, dbport, dbuser, dbpass, dbname, encoding):
         self.conn = psycopg2.connect(database=dbname, user=dbuser, password=dbpass, host=dbhost, port=dbport)
         self.conn.set_client_encoding(encoding)

@@ -3,6 +3,7 @@
 # http_tools.py
 
 
+import sys
 import random
 import http.client
 import urllib.error
@@ -13,9 +14,12 @@ from common.utility import get_logger
 from common.http_utility import get_homepage, pc_browser_ua, get_html_content
 
 
+
+
 # 查询 IP 归属地（使用的是 ipip.net 的数据）
 def inquire_ip_location(logger, ip):
-    logger.debug("ip_location_inquiry(): start ...")
+    this_func_name = sys._getframe().f_code.co_name
+    logger.debug("%s(): start ..." % this_func_name)
     if ip is None or len(ip) == 0:
         return
 
@@ -33,6 +37,7 @@ def inquire_ip_location(logger, ip):
     l = html_soup.select('tr > td[colspan="3"] > div > span[id="myself"]')
     if len(l) == 1:
         return l[0].string.strip()
+    logger.debug("%s(): end ..." % this_func_name)
     return
 
 
@@ -58,28 +63,29 @@ def generate_proxy_pair(protocol, ip, port):
 
 # 获取 proxy 的响应延迟（单位是 ms）
 def get_response_delay(logger, url, protocol, ip, port, retry=4):
-    logger.debug("get_response_delay(): start ...")
+    this_func_name = sys._getframe().f_code.co_name
+    logger.debug("%s(): start ..." % this_func_name)
     proxy = generate_proxy_pair(protocol, ip, port)
     if proxy is None or len(proxy) != 2:
         return
-    logger.debug("get_response_delay(): proxy URL\t%s" % proxy[1])
+    logger.debug("%s(): proxy URL\t%s" % (this_func_name, proxy[1]))
     _user_agent = random.choice(pc_browser_ua)
     l = []
     for index in range(retry, 0, -1):
-        logger.debug("get_response_delay(): index\t%d" % index)
+        logger.debug("%s(): index\t%d" % (this_func_name, index))
         result = get_html_content(logger, url, user_agent=_user_agent, proxy_pair=proxy)
         if result[0] == -1:
-            logger.debug("get_response_delay(): exception type\t%s" % type(result[1]))
+            logger.debug("%s(): exception type\t%s" % (this_func_name, type(result[1])))
             if isinstance(result[1], (urllib.error.HTTPError, urllib.error.URLError, http.client.InvalidURL, TypeError)):
                 break
             else:
                 continue
         l.append(result[0])
-        logger.debug("get_response_delay(): index: %d\tresponse delay: %f" % (index, result[0]))
-    logger.debug("get_response_delay(): response delay records\t%s" % str(l))
+        logger.debug("%s(): index: %d\tresponse delay: %f" % (this_func_name, index, result[0]))
+    logger.debug("%s(): response delay records\t%s" % (this_func_name, str(l)))
     if len(l) > 0:
         average = round(sum(l)/len(l), 1)
-        logger.debug("get_response_delay(): response delay average\t%f" % average)
+        logger.debug("%s(): response delay average\t%f" % (this_func_name, average))
         return average
     return
 

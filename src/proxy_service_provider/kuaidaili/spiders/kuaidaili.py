@@ -55,13 +55,15 @@ class kuaidaili(Spider):
 
 
     def parse_base_url(self, response):
-        self.logger.debug("****************************************************************************************************")
-        self.logger.debug("parse_base_url(): base url\t\t\t%s" % (response.url))
+        this_func_name = sys._getframe().f_code.co_name
+        self.logger.debug("%s(): ****************************************************************************************************" % this_func_name)
+        self.logger.debug("%s(): start ..." % this_func_name)
+        self.logger.debug("%s(): base url\t\t\t%s" % (this_func_name, response.url))
         sel = Selector(response)
         channel_list = sel.xpath('//div/div[@class="tag_area2"]/a[contains(@id, "tag_") and contains(@class, "label") and contains(@href, "/free/")]/@href').extract()
         for channel in channel_list:
             link = self.base_url + channel
-            self.logger.debug("parse_base_url(): channel\t\t\t%s" % (link))
+            self.logger.debug("%s(): channel\t\t\t%s" % (this_func_name, link))
             yield Request(
                 url=link,
                 meta=response.meta,
@@ -70,7 +72,8 @@ class kuaidaili(Spider):
 
 
     def parse_proxy_list(self, response):
-        self.logger.debug("parse_proxy_list(): proxy list\t\t%s" % (response.url))
+        this_func_name = sys._getframe().f_code.co_name
+        self.logger.debug("%s(): proxy list\t\t%s" % (this_func_name, response.url))
         # 是否向后翻页
         flag = True
         sel = Selector(response)
@@ -124,13 +127,14 @@ class kuaidaili(Spider):
 
     # 翻页
     def turn_to_next_page(self, response):
-        self.logger.debug("turn_to_next_page(): current page\t%s" % (response.url))
+        this_func_name = sys._getframe().f_code.co_name
+        self.logger.debug("%s(): current page\t%s" % (this_func_name, response.url))
         sel = Selector(response)
         next_page_list = sel.xpath(u'//div[@id="listnav"]/ul/li/a[@class="active"]/../following-sibling::li/a/@href').extract()
         if len(next_page_list) == 0:
             return
         link = self.base_url + next_page_list[0]
-        self.logger.debug("turn_to_next_page(): next page\t\t%s" % (link))
+        self.logger.debug("%s(): next page\t\t%s" % (this_func_name, link))
         return Request(
             url=link,
             meta=response.meta,

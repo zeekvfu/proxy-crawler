@@ -3,14 +3,20 @@
 # codec.py
 
 
+import sys
+
+
+
+
 # 解码
 def decode(logger, content, encoding):
+    this_func_name = sys._getframe().f_code.co_name
     if encoding is None:
         return
     try:
         return content.decode(encoding)
     except UnicodeDecodeError as e:
-        logger.error("decode(): UnicodeDecodeError\t%s\t%s" % (e.encoding, e.reason))
+        logger.error("%s(): UnicodeDecodeError\t%s\t%s" % (this_func_name, e.encoding, e.reason))
         return
 
 
@@ -30,5 +36,7 @@ def gen_encoding_map():
 
 encoding_map = gen_encoding_map()
 encoding_list = ['utf-8', 'gbk', 'gb18030', 'gb2312']
+
+
 
 

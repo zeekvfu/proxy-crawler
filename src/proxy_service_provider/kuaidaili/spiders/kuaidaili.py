@@ -6,6 +6,8 @@
 import os
 import sys
 import datetime
+import time
+import warnings
 import logging
 
 from scrapy.spiders import Spider
@@ -31,9 +33,7 @@ class kuaidaili(Spider):
 
     @property
     def logger(self):
-        script_dir = self.get_script_dir()
-        config = FileUtility.load_json_preserving_order('%s/../../../../conf/proxy_crawler.config.json' % script_dir)
-        return get_logger("%s/../../../../log/%s.log" % (script_dir, self.name), config['log_level'])
+        return self._logger
 
 
     def __init__(self, start_date=None, *args, **kwargs):
@@ -44,17 +44,22 @@ class kuaidaili(Spider):
         else:
             self.start_date = "%s-%s-%s" % (start_date[0:4], start_date[4:6], start_date[6:8])
 
+        script_dir = self.get_script_dir()
+        config = FileUtility.load_json_preserving_order('%s/../../../../conf/proxy_crawler.config.json' % script_dir)
+        timestamp = time.strftime('%Y-%m-%d_%H:%M:%S')
+        self._logger = get_logger("%s/../../../../log/%s.%s.log" % (script_dir, self.name, timestamp), config['log_level'])
+
 
     def start_requests(self):
         meta = {}
         yield Request(
             url=self.starting_page,
             meta=meta,
-            callback=self.parse_base_url
+            callback=self.parse_starting_page
         )
 
 
-    def parse_base_url(self, response):
+    def parse_starting_page(self, response):
         this_func_name = sys._getframe().f_code.co_name
         self.logger.debug("%s(): ****************************************************************************************************" % this_func_name)
         self.logger.debug("%s(): start ..." % this_func_name)
@@ -74,55 +79,59 @@ class kuaidaili(Spider):
     def parse_proxy_list(self, response):
         this_func_name = sys._getframe().f_code.co_name
         self.logger.debug("%s(): proxy list\t\t%s" % (this_func_name, response.url))
-        # 是否向后翻页
-        flag = True
         sel = Selector(response)
         proxy_list = sel.xpath('//table[@class="table table-bordered table-striped"]/tbody/tr')
         for proxy_record in proxy_list:
+            s = str(proxy_record.extract())
             item = ProxyItem()
+
             # ip
             elements = proxy_record.xpath(u'td[@data-title="IP"]/text()').extract()
             if len(elements) != 1:
-                return
+                warnings.warn("\t%s(): len(elements)!=1\t%s\t%s" % (this_func_name, s, str(elements)))
+                continue
             item['ip'] = elements[0]
             # port
             elements = proxy_record.xpath(u'td[@data-title="PORT"]/text()').extract()
             if len(elements) != 1:
-                return
+                warnings.warn("\t%s(): len(elements)!=1\t%s\t%s" % (this_func_name, s, str(elements)))
+                continue
             item['port'] = int(elements[0])
             # protocol
             elements = proxy_record.xpath(u'td[@data-title="类型"]/text()').extract()
             if len(elements) != 1:
-                return
+                warnings.warn("\t%s(): len(elements)!=1\t%s\t%s" % (this_func_name, s, str(elements)))
+                continue
             item['protocol'] = elements[0]
             # anonymity
             elements = proxy_record.xpath(u'td[@data-title="匿名度"]/text()').extract()
             if len(elements) != 1:
-                return
+                warnings.warn("\t%s(): len(elements)!=1\t%s\t%s" % (this_func_name, s, str(elements)))
+                continue
             item['anonymity'] = elements[0]
             # location
             elements = proxy_record.xpath(u'td[@data-title="位置"]/text()').extract()
             if len(elements) != 1:
-                return
+                warnings.warn("\t%s(): len(elements)!=1\t%s\t%s" % (this_func_name, s, str(elements)))
+                continue
             item['location'] = elements[0]
             # validation_time
             elements = proxy_record.xpath(u'td[@data-title="最后验证时间"]/text()').extract()
             if len(elements) != 1:
-                return
+                warnings.warn("\t%s(): len(elements)!=1\t%s\t%s" % (this_func_name, s, str(elements)))
+                continue
             item['validation_time'] = elements[0]
             if item['validation_time'] < self.start_date:
-                flag = False
-                break
+                # 不再向后翻页
+                return
 
             item['source'] = self.name
             item['user_name'] = ''
             item['password'] = ''
             item['support_request_type'] = ''
             item['sp'] = ''
-
             yield item
-        if flag:
-            yield self.turn_to_next_page(response)
+        yield self.turn_to_next_page(response)
 
 
     # 翻页

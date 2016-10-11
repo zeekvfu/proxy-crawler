@@ -9,6 +9,7 @@ import random
 import logging
 import itertools
 import datetime
+import re
 
 from collections import OrderedDict
 
@@ -77,6 +78,16 @@ def flatten_list(l):
 def merge_list_preserving_order(*args):
     result = itertools.chain(*args)
     return list(OrderedDict.fromkeys(result))
+
+
+# 去掉 list 中的空白行
+def trim_blank_lines_in_list(lines):
+    result = []
+    for line in lines:
+        l = line.strip()
+        if l:        # 字符串非空
+            result.append(l)
+    return result
 
 
 def get_logger(log_file, log_level=logging.DEBUG):

@@ -11,9 +11,7 @@ import IP
 from bs4 import BeautifulSoup
 
 from common.utility import get_logger
-from common.http_utility import get_homepage, pc_browser_ua, get_html_content
-
-
+from common.http_utility import get_homepage_url, pc_browser_ua, get_html_content
 
 
 # 查询 IP 归属地（使用的是 ipip.net 的数据）
@@ -27,7 +25,7 @@ def inquire_ip_location(logger, ip):
     post_data = {
             'ip': ip
             }
-    referer = get_homepage(url)
+    referer = get_homepage_url(url)
     user_agent = random.choice(pc_browser_ua)
 
     result = get_html_content(logger, url, post_data, referer, user_agent)

@@ -15,8 +15,6 @@ from common.utility import merge_list_preserving_order
 from common.codec import encoding_map, encoding_list, decode
 
 
-
-
 pc_browser_ua = (
         "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36",
         "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36",
@@ -113,7 +111,7 @@ search_engine_ua = ()
 
 
 # 获取 URL 对应的 homepage
-def get_homepage(url):
+def get_homepage_url(url):
     if url is None or len(url) == 0:
         return
     components = urllib.parse.urlparse(url)
@@ -247,7 +245,7 @@ if __name__ == '__main__':
     result = random.choice(pc_browser_ua)
     print(result)
 
-    result = get_homepage("https://www.zhihu.com/question/19861840")
+    result = get_homepage_url("https://www.zhihu.com/question/19861840")
     print(result)
 
 

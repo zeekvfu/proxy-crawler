@@ -5,7 +5,7 @@
 
 import os
 import time
-from common.file_utility import write_to_file
+from common.file_utility import FileUtility
 
 
 # 获取脚本所在的路径
@@ -39,7 +39,7 @@ FEED_EXPORT_FIELDS = [
 # FEED_URI = script_dir + '/../../../output/%(name)s.%(time)s.csv'
 FEED_URI = '%s/../../../output/%s.%s.csv' % (script_dir, BOT_NAME, time.strftime('%Y-%m-%d_%H:%M:%S'))
 FEED_URI = os.path.realpath(FEED_URI)
-write_to_file('%s/../../../output/proxy_crawler.output' % script_dir, FEED_URI + '\n')
+FileUtility.write_to_file('%s/../../../output/proxy_crawler.output' % script_dir, FEED_URI + '\n')
 
 CSV_DELIMITER = '\t'
 FEED_EXPORTERS = {

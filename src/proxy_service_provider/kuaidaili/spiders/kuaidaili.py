@@ -14,7 +14,7 @@ from scrapy.selector import Selector
 
 from _scrapy.items import ProxyItem
 from common.utility import get_logger
-from common.file_utility import load_json_preserving_order
+from common.file_utility import FileUtility
 
 
 class kuaidaili(Spider):
@@ -32,7 +32,7 @@ class kuaidaili(Spider):
     @property
     def logger(self):
         script_dir = self.get_script_dir()
-        config = load_json_preserving_order('%s/../../../../conf/proxy_crawler.config.json' % script_dir)
+        config = FileUtility.load_json_preserving_order('%s/../../../../conf/proxy_crawler.config.json' % script_dir)
         return get_logger("%s/../../../../log/%s.log" % (script_dir, self.name), config['log_level'])
 
 

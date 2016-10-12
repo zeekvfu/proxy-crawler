@@ -17,7 +17,8 @@ class ProxyItem(Item):
     location = Field(default="", type="str")
     sp = Field(default="", type="str")
     validation_time = Field(default="", type="str")
-    source = Field(default="", type="str")
+    source_site = Field(default="", type="str")
+    source_url = Field(default="", type="str")
 
 
 

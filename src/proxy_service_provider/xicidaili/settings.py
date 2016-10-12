@@ -33,7 +33,8 @@ FEED_EXPORT_FIELDS = [
         "location", 
         "sp", 
         "validation_time", 
-        "source"
+        "source_site",
+        "source_url"
         ]
 
 # FEED_URI = script_dir + '/../../../output/%(name)s.%(time)s.csv'

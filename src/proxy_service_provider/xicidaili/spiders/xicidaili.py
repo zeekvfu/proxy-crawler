@@ -40,7 +40,7 @@ class xicidaili(Spider):
         super(xicidaili, self).__init__(*args, **kwargs)
         self.start_date = None
         if start_date is None:
-            self.start_date = (datetime.date.today() + datetime.timedelta(days=-1)).strftime('%y-%m-%d')
+            self.start_date = (datetime.date.today() + datetime.timedelta(days=-3)).strftime('%y-%m-%d')
         else:
             self.start_date = "%s-%s-%s" % (start_date[2:4], start_date[4:6], start_date[6:8])
 
@@ -101,8 +101,8 @@ class xicidaili(Spider):
             # location
             elements = proxy_record.xpath(u'td[position()=4]//text()').extract()
             if len(elements) != 1:
-                # warnings.warn("\t%s(): len(elements)!=1\t%s\t%s" % (this_func_name, s, str(elements)))
-                pass
+                warnings.warn("\t%s(): len(elements)!=1\t%s\t%s" % (this_func_name, s, str(elements)))
+                # pass
             item['location'] = '\n'.join(trim_blank_lines_in_list(elements))
             # anonymity
             elements = proxy_record.xpath(u'td[position()=5]/text()').extract()
@@ -126,12 +126,14 @@ class xicidaili(Spider):
                 # 不再向后翻页
                 return
 
-            item['source'] = self.name
             item['user_name'] = ''
             item['password'] = ''
             item['support_request_type'] = ''
             item['sp'] = ''
+            item['source_site'] = self.name
+            item['source_url'] = response.url
             yield item
+
         yield self.turn_to_next_page(response)
 
 

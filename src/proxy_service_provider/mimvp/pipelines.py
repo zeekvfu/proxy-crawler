@@ -13,7 +13,7 @@ class ETL(object):
         item['ip'] = item['ip'].strip()
         item['user_name'] = item['user_name'].strip()
         item['password'] = item['password'].strip()
-        item['anonymity'] = item['anonymity']
+        item['anonymity'] = item['anonymity'].strip()
         item['location'] = item['location'].strip()
         item['support_request_type'] = item['support_request_type'].strip()
         item['sp'] = item['sp'].strip()

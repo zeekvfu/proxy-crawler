@@ -101,8 +101,8 @@ class xicidaili(Spider):
             # location
             elements = proxy_record.xpath(u'td[position()=4]//text()').extract()
             if len(elements) != 1:
-                warnings.warn("\t%s(): len(elements)!=1\t%s\t%s" % (this_func_name, s, str(elements)))
-                # pass
+                # warnings.warn("\t%s(): len(elements)!=1\t%s\t%s" % (this_func_name, s, str(elements)))
+                pass
             item['location'] = '\n'.join(trim_blank_lines_in_list(elements))
             # anonymity
             elements = proxy_record.xpath(u'td[position()=5]/text()').extract()

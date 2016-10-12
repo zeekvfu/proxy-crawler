@@ -22,8 +22,8 @@ from common.file_utility import FileUtility
 class kuaidaili(Spider):
 
     name = 'kuaidaili'
-    base_url = "http://www.kuaidaili.com"
-    starting_page = "%s/free/" % (base_url)
+    base_url = 'http://www.kuaidaili.com'
+    starting_page = 'http://www.kuaidaili.com/free/'
 
 
     @classmethod
@@ -130,7 +130,7 @@ class kuaidaili(Spider):
             item['support_request_type'] = ''
             item['sp'] = ''
             item['source_site'] = self.name
-            item['source_url'] = response.url
+            item['source_url'] = ''
             yield item
 
         yield self.turn_to_next_page(response)

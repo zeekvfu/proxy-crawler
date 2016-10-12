@@ -22,7 +22,7 @@ from common.file_utility import FileUtility
 class xicidaili(Spider):
 
     name = 'xicidaili'
-    base_url = "http://www.xicidaili.com"
+    base_url = 'http://www.xicidaili.com'
     starting_page = base_url
 
 
@@ -131,7 +131,7 @@ class xicidaili(Spider):
             item['support_request_type'] = ''
             item['sp'] = ''
             item['source_site'] = self.name
-            item['source_url'] = response.url
+            item['source_url'] = ''
             yield item
 
         yield self.turn_to_next_page(response)

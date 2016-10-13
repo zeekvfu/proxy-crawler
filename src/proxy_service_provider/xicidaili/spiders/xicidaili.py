@@ -40,7 +40,7 @@ class xicidaili(Spider):
         super(xicidaili, self).__init__(*args, **kwargs)
         self.start_date = None
         if start_date is None:
-            self.start_date = (datetime.date.today() + datetime.timedelta(days=-3)).strftime('%y-%m-%d')
+            self.start_date = (datetime.datetime.now() + datetime.timedelta(days=-1)).strftime('%y-%m-%d %H:%M')
         else:
             self.start_date = "%s-%s-%s" % (start_date[2:4], start_date[4:6], start_date[6:8])
 

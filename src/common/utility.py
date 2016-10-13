@@ -80,10 +80,14 @@ def merge_list_preserving_order(*args):
     return list(OrderedDict.fromkeys(result))
 
 
-# 将 dict 合并起来
+# 合并 dict
 def merge_dict(*dict_args):
+    return merge_dict_in_sequence(dict_args)
+
+
+def merge_dict_in_sequence(l):
     dd = defaultdict(list)
-    for d in dict_args:
+    for d in l:
         for key, value in d.items():
             dd[key].append(value)
     return dd

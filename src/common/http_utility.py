@@ -140,6 +140,38 @@ def sleep(interval):
         time.sleep(random.randint(*interval))
 
 
+# 测试端口是否开放
+def test_port_open(logger, ip, port, protocol='tcp', retry=3):
+    this_func_name = sys._getframe().f_code.co_name
+    logger.debug("%s(): retry\t\t%d" % (this_func_name, retry))
+    retry = retry-1
+    logger.debug("%s(): ip: %s\tport: %d\tprotocol: %s" % (this_func_name, ip, port, protocol))
+    socket_type = socket.SOCK_STREAM
+    if protocol == 'udp':
+        socket_type = socket.SOCK_DGRAM
+    elif protocol == 'raw':
+        socket_type = socket.SOCK_RAW
+    flag = False
+    try:
+        sock = socket.socket(socket.AF_INET, socket_type)
+        sock.connect((ip, port))
+        flag = True
+    except OverflowError as e:
+        logger.error("%s(): OverflowError" % this_func_name)
+    except TimeoutError as e:
+        logger.error("%s(): TimeoutError\terrno: %d\tstrerror: %s" % (this_func_name, e.errno, e.strerror))
+        if retry > 0:
+            return test_port_open(logger, ip, port, protocol, retry)
+    except ConnectionRefusedError as e:
+        logger.error("%s(): ConnectionRefusedError\terrno: %d\tstrerror: %s" % (this_func_name, e.errno, e.strerror))
+        if retry > 0:
+            return test_port_open(logger, ip, port, protocol, retry)
+    finally:
+        sock.close()
+    logger.info("%s(): retry: %d\tport open: %r" % (this_func_name, retry+1, flag))
+    return flag
+
+
 # 解析得到 URL 对应的 HTML
 # 返回值：成功，[delay, content]；失败，[-1, exception instance]
 # 说明：之所以要返回异常类型，是因为有时侯外层调用者 caller 需要根据异常类型，做针对性地处理

@@ -11,7 +11,7 @@ import IP
 from bs4 import BeautifulSoup
 
 from common.utility import get_logger
-from common.http_utility import get_homepage_url, pc_browser_ua, get_html_content
+from common.http_utility import get_homepage_url, pc_browser_ua, test_port_open, get_html_content
 
 
 # 查询 IP 归属地（使用的是 ipip.net 的数据）
@@ -96,6 +96,9 @@ if __name__ == '__main__':
     ip = "205.252.220.20"
     result = inquire_ip_location(logger, ip)
     logger.info("%s\t%s" % (ip, result))
+
+    test_port_open(logger, '45.32.36.87', 312888)
+    test_port_open(logger, '45.32.36.87', 8888)
 
     # url = "https://www.baidu.com/"
     url = "http://mindcache.io/"

@@ -11,9 +11,9 @@ class FileUtility():
 
     # 按行读取文件，包括空行
     @staticmethod
-    def read_file_by_line(file_name, open_mode='r'):
+    def read_file_by_line(file_name):
         lines = []
-        with open(file_name, encoding='utf-8', mode=open_mode) as f:
+        with open(file_name, encoding='utf-8', mode='r') as f:
             while True:
                 line = f.readline()
                 if not line:
@@ -24,7 +24,7 @@ class FileUtility():
 
     # 按行读取文件（行去重）
     @staticmethod
-    def read_unique_lines(file_name, open_mode='r'):
+    def read_unique_lines(file_name):
         unique_lines = []
         with open(file_name, encoding='utf-8', mode='r') as f:
             while True:
@@ -40,19 +40,21 @@ class FileUtility():
 
     # 读取配置文件
     @staticmethod
-    def read_config(file_name, open_mode='r'):
-        with open(file_name, encoding='utf-8', mode=open_mode) as f:
+    def read_config(file_name):
+        with open(file_name, encoding='utf-8', mode='r') as f:
             content = f.read()
             return eval(content)
 
 
     # 读取 JSON 配置文件
     @staticmethod
-    def load_json_preserving_order(file_name, open_mode='r'):
-        with open(file_name, encoding='utf-8', mode=open_mode) as f:
+    def load_json_config(file_name, keep_order=False):
+        with open(file_name, encoding='utf-8', mode='r') as f:
             content = f.read()
-            # 保持 JSON 文件里 dict 原来的顺序
-            return json.loads(content, object_pairs_hook=OrderedDict)
+            if keep_order:
+                # 保持 JSON 文件里 dict 原来的顺序
+                return json.loads(content, object_pairs_hook=OrderedDict)
+            return json.loads(content)
 
 
     # 将字符串 s 写入文件

@@ -45,7 +45,7 @@ class xicidaili(Spider):
             self.start_date = "%s-%s-%s" % (start_date[2:4], start_date[4:6], start_date[6:8])
 
         script_dir = self.get_script_dir()
-        config = FileUtility.load_json_preserving_order('%s/../../../../conf/proxy_crawler.config.json' % script_dir)
+        config = FileUtility.load_json_config('%s/../../../../conf/proxy_crawler.config.json' % script_dir)
         timestamp = time.strftime('%Y-%m-%d_%H:%M:%S')
         self._logger = get_logger("%s/../../../../log/%s.%s.log" % (script_dir, self.name, timestamp), config['log_level'])
 

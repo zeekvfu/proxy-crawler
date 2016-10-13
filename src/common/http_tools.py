@@ -60,7 +60,7 @@ def generate_proxy_pair(protocol, ip, port):
 
 
 # 获取 proxy 的响应延迟（单位是 ms）
-def get_response_delay(logger, url, protocol, ip, port, retry=4):
+def get_proxy_delay(logger, url, protocol, ip, port, retry=4):
     this_func_name = sys._getframe().f_code.co_name
     logger.debug("%s(): start ..." % this_func_name)
     proxy = generate_proxy_pair(protocol, ip, port)
@@ -104,14 +104,14 @@ if __name__ == '__main__':
     protocol = 'HTTP'
     ip = '45.32.36.87'
     port = 31288
-    response_delay_in_ms = get_response_delay(logger, url, protocol, ip, port)
+    response_delay_in_ms = get_proxy_delay(logger, url, protocol, ip, port)
     if response_delay_in_ms is not None:
         logger.info("%s\t%f" % (generate_proxy_url(protocol, ip, port), response_delay_in_ms))
 
     protocol = 'HTTPS'
     ip = '45.32.36.87'
     port = 31299
-    response_delay_in_ms = get_response_delay(logger, url, protocol, ip, port)
+    response_delay_in_ms = get_proxy_delay(logger, url, protocol, ip, port)
     if response_delay_in_ms is not None:
         logger.info("%s\t%f" % (generate_proxy_url(protocol, ip, port), response_delay_in_ms))
 

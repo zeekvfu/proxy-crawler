@@ -11,7 +11,7 @@ import itertools
 import datetime
 import re
 
-from collections import OrderedDict
+from collections import defaultdict, OrderedDict
 
 
 # 获取脚本所在的路径
@@ -78,6 +78,15 @@ def flatten_list(l):
 def merge_list_preserving_order(*args):
     result = itertools.chain(*args)
     return list(OrderedDict.fromkeys(result))
+
+
+# 将 dict 合并起来
+def merge_dict(*dict_args):
+    dd = defaultdict(list)
+    for d in dict_args:
+        for key, value in d.items():
+            dd[key].append(value)
+    return dd
 
 
 # 去掉 list 中的空白行

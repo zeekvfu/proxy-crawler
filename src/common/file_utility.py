@@ -57,6 +57,14 @@ class FileUtility():
             return json.loads(content)
 
 
+    # 读取 Python data structure 形式的配置文件
+    @staticmethod
+    def eval_config(file_name, keep_order=False):
+        with open(file_name, encoding='utf-8', mode='r') as f:
+            content = f.read()
+            return eval(content)
+
+
     # 将字符串 s 写入文件
     @staticmethod
     def write_to_file(file_name, s, open_mode='w'):

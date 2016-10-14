@@ -141,11 +141,9 @@ def sleep(interval):
 
 
 # 测试端口是否开放
-def test_port_open(logger, ip, port, protocol='tcp', retry=3):
+def test_port_open(logger, ip, port, protocol='tcp', retry=2):
     this_func_name = sys._getframe().f_code.co_name
-    logger.debug("%s(): retry\t\t%d" % (this_func_name, retry))
     retry = retry-1
-    logger.debug("%s(): ip: %s\tport: %d\tprotocol: %s" % (this_func_name, ip, port, protocol))
     socket_type = socket.SOCK_STREAM
     if protocol == 'udp':
         socket_type = socket.SOCK_DGRAM
@@ -166,9 +164,13 @@ def test_port_open(logger, ip, port, protocol='tcp', retry=3):
         logger.error("%s(): ConnectionRefusedError\terrno: %d\tstrerror: %s" % (this_func_name, e.errno, e.strerror))
         if retry > 0:
             return test_port_open(logger, ip, port, protocol, retry)
+    except OSError as e:
+        logger.error("%s(): OSError\terrno: %d\tstrerror: %s" % (this_func_name, e.errno, e.strerror))
+        if retry > 0:
+            return test_port_open(logger, ip, port, protocol, retry)
     finally:
         sock.close()
-    logger.info("%s(): retry: %d\tport open: %r" % (this_func_name, retry+1, flag))
+    logger.info("%s(): retry: %d\tip: %s\tport: %d\tprotocol: %s\tport open: %r" % (this_func_name, retry+1, ip, port, protocol, flag))
     return flag
 
 

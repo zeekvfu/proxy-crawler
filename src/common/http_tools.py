@@ -70,7 +70,6 @@ def get_proxy_delay(logger, url, protocol, ip, port, retry=4):
     _user_agent = random.choice(pc_browser_ua)
     l = []
     for index in range(retry, 0, -1):
-        logger.debug("%s(): index\t%d" % (this_func_name, index))
         result = get_html_content(logger, url, user_agent=_user_agent, proxy_pair=proxy)
         if result[0] == -1:
             logger.debug("%s(): exception type\t%s" % (this_func_name, type(result[1])))

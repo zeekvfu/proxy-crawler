@@ -11,8 +11,8 @@ import socket
 import http.client
 import urllib.parse, urllib.request, urllib.error
 
-from common.utility import merge_list_preserving_order
-from common.codec import Codec
+from util.utility import merge_list_preserving_order
+from util.codec import Codec
 
 
 pc_browser_ua = [
@@ -152,20 +152,25 @@ def test_port_open(logger, ip, port, protocol='tcp', retry=2):
     flag = False
     try:
         sock = socket.socket(socket.AF_INET, socket_type)
+        sock.settimeout(5)
         sock.connect((ip, port))
         flag = True
     except OverflowError as e:
         logger.error("%s(): OverflowError" % this_func_name)
+    except socket.timeout as e:
+        logger.error("%s(): socket.timeout" % this_func_name)
+        if retry > 0:
+            return test_port_open(logger, ip, port, protocol, retry)
     except TimeoutError as e:
-        logger.error("%s(): TimeoutError\terrno: %d\tstrerror: %s" % (this_func_name, e.errno, e.strerror))
+        logger.error("%s(): TimeoutError\terrno: %s\tstrerror: %s" % (this_func_name, e.errno, e.strerror))
         if retry > 0:
             return test_port_open(logger, ip, port, protocol, retry)
     except ConnectionRefusedError as e:
-        logger.error("%s(): ConnectionRefusedError\terrno: %d\tstrerror: %s" % (this_func_name, e.errno, e.strerror))
+        logger.error("%s(): ConnectionRefusedError\terrno: %s\tstrerror: %s" % (this_func_name, e.errno, e.strerror))
         if retry > 0:
             return test_port_open(logger, ip, port, protocol, retry)
     except OSError as e:
-        logger.error("%s(): OSError\terrno: %d\tstrerror: %s" % (this_func_name, e.errno, e.strerror))
+        logger.error("%s(): OSError\terrno: %s\tstrerror: %s" % (this_func_name, e.errno, e.strerror))
         if retry > 0:
             return test_port_open(logger, ip, port, protocol, retry)
     finally:

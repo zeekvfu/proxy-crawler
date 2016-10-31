@@ -15,8 +15,8 @@ from scrapy.http.request import Request
 from scrapy.selector import Selector
 
 from _scrapy.items import ProxyItem
-from common.utility import get_logger
-from common.file_utility import FileUtility
+from util.utility import get_logger
+from util.file_utility import FileUtility
 
 
 class kuaidaili(Spider):

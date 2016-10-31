@@ -15,8 +15,8 @@ from scrapy.http.request import Request
 from scrapy.selector import Selector
 
 from _scrapy.items import ProxyItem
-from common.utility import get_logger, trim_blank_lines_in_list
-from common.file_utility import FileUtility
+from util.utility import get_logger, trim_blank_lines_in_list
+from util.file_utility import FileUtility
 
 
 class cn_proxy(Spider):

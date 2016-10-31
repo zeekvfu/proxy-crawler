@@ -10,8 +10,8 @@ import urllib.error
 import IP
 from bs4 import BeautifulSoup
 
-from common.utility import get_logger
-from common.http_utility import get_homepage_url, pc_browser_ua, test_port_open, get_html_content
+from util.utility import get_logger
+from util.http_utility import get_homepage_url, pc_browser_ua, test_port_open, get_html_content
 
 
 # 查询 IP 归属地（使用的是 ipip.net 的数据）

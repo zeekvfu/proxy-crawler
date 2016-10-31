@@ -5,7 +5,7 @@
 
 import os
 import time
-from common.file_utility import FileUtility
+from util.file_utility import FileUtility
 
 
 # 获取脚本所在的路径

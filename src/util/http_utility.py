@@ -193,8 +193,7 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
         proxy_dict = {}
         proxy_dict[proxy_pair[0]] = proxy_pair[1]
         proxy_handler = urllib.request.ProxyHandler(proxy_dict)
-        auth_handler = urllib.request.HTTPBasicAuthHandler()
-        opener = urllib.request.build_opener(proxy_handler, auth_handler, urllib.request.HTTPHandler, urllib.request.HTTPSHandler)
+        opener = urllib.request.build_opener(proxy_handler, urllib.request.HTTPHandler, urllib.request.HTTPSHandler)
         urllib.request.install_opener(opener)
     # 伪造 HTTP request header
     _headers = {}

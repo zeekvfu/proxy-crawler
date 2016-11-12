@@ -79,7 +79,7 @@ def get_proxy_delay(logger, url, protocol, ip, port, retry=4):
                 continue
         l.append(result[0])
         logger.debug("%s(): index: %d\tresponse delay: %f" % (this_func_name, index, result[0]))
-    logger.debug("%s(): response delay records\t%s" % (this_func_name, str(l)))
+    logger.debug("%s(): response delay records\t%s" % (this_func_name, l))
     if len(l) > 0:
         average = round(sum(l)/len(l), 1)
         logger.debug("%s(): response delay average\t%f" % (this_func_name, average))

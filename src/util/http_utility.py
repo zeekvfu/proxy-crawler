@@ -225,7 +225,7 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
             logger.info("%s(): encoding\t%s" % (this_func_name, encoding))
             if encoding is not None:
                 encodings = merge_list_preserving_order([Codec.encoding_map.get(encoding, encoding)], Codec.encoding_list)
-            logger.info("%s(): encodings\t%s" % (this_func_name, ', '.join(encodings)))
+            logger.info("%s(): encodings\t%s" % (this_func_name, encodings))
             html_content = None
             for encoding in encodings:
                 html_content = Codec.decode(logger, content, encoding)

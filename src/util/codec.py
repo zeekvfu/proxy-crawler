@@ -15,9 +15,11 @@ class Codec():
             return
         try:
             return content.decode(encoding)
+        except LookupError as e:
+            logger.error("%s(): LookupError" % this_func_name)
         except UnicodeDecodeError as e:
             logger.error("%s(): UnicodeDecodeError\t%s\t%s" % (this_func_name, e.encoding, e.reason))
-            return
+        return
 
 
     @staticmethod

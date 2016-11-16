@@ -185,7 +185,7 @@ def test_port_open(logger, ip, port, protocol='tcp', retry=2):
 def get_html_content(logger, url, post_data=None, referer=None, user_agent=None, proxy_pair=None, sleep_interval=3, retry=3):
     this_func_name = sys._getframe().f_code.co_name
     logger.info("%s(): retry\t\t%d" % (this_func_name, retry))
-    retry = retry-1
+    retry = retry - 1
     start_timestamp = time.time()
     # 使用 HTTP/HTTPS 代理
     if proxy_pair is not None and len(proxy_pair) == 2:

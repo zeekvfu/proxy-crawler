@@ -34,7 +34,7 @@ def empty_str_to_none(s):
     return s
 
 
-# 与 str() 方法的区别是，可以自定义将 None 转化成什么 str
+# 与 str() 方法的区别：可以自定义将 None 转化成什么 str、可以自定义 datetime 类型的格式
 def obj_to_str(obj, none_to_what='', datetime_format='%Y-%m-%d %H:%M:%S'):
     result = None
     if obj is None:

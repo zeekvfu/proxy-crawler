@@ -48,7 +48,7 @@ FEED_EXPORTERS = {
         }
 
 
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
 LOG_FILE = '%s/../../../log/%s.%s.log' % (script_dir, BOT_NAME, time.strftime('%Y-%m-%d_%H:%M:%S'))
 
 
@@ -70,6 +70,6 @@ CLOSESPIDER_ERRORCOUNT = 50
 REACTOR_THREADPOOL_MAXSIZE = 200
 
 
-USER_AGENT = "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0"
+USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36"
 
 

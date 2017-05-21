@@ -19,6 +19,19 @@ def get_script_dir():
     return os.path.dirname(os.path.realpath(__file__))
 
 
+def get_integer_collection(s, level_1_seperator=',', level_2_seperator=':'):
+    result = set()
+    items = s.split(level_1_seperator)
+    for item in items:
+        fields = item.strip().split(level_2_seperator)
+        if len(fields) == 1:
+            result.add(int(fields[0].strip()))
+        elif len(fields) == 2:
+            tmp = range(int(fields[0].strip()), int(fields[1].strip())+1)
+            result.update(list(tmp))
+    return result
+
+
 # 从 sequence 中随机获取一个元素
 # use `random.choice()` instead
 def random_elem(l):
@@ -122,6 +135,7 @@ if __name__ == '__main__':
     print(__file__)
     print(os.path.realpath(__file__))
     print(get_script_dir())
+    print(get_integer_collection('1:3,5,8:10'))
 
 
 

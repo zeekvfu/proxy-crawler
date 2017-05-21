@@ -209,9 +209,9 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
         logger.debug("%s(): User-Agent\t%s" % (this_func_name, user_agent))
         req.add_header('User-Agent', user_agent)
     try:
-        logger.debug("%s(): before urlopen() ...\t%s" % (this_func_name, url))
+        logger.info("%s(): before urlopen() ...\t%s" % (this_func_name, url))
         with urllib.request.urlopen(req, timeout=30) as response:
-            logger.debug("%s(): after urlopen() ..." % this_func_name)
+            logger.info("%s(): after urlopen() ..." % this_func_name)
             if response.status != 200:
                 logger.info("%s(): response.status\t%d" % (this_func_name, response.status))
             logger.debug("%s(): before HTTPResponse.read() ..." % this_func_name)

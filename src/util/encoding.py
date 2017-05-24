@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # coding: utf-8
-# codec.py
+# encoding.py
 
 
 import sys
 
 
-class Codec():
+class Encoding():
 
     @staticmethod
     def decode(logger, content, encoding):

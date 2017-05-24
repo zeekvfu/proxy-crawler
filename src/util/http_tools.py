@@ -60,17 +60,18 @@ def generate_proxy_pair(protocol, ip, port):
 
 
 # 获取 proxy 的响应延迟（单位是 ms）
-def get_proxy_delay(logger, url, protocol, ip, port, retry=4):
+# 可以重试多次，计算平均延时
+def get_proxy_delay(logger, url, protocol, ip, port, retry=1):
     this_func_name = sys._getframe().f_code.co_name
     logger.debug("%s(): start ..." % this_func_name)
     proxy = generate_proxy_pair(protocol, ip, port)
     if proxy is None or len(proxy) != 2:
         return
     logger.debug("%s(): proxy URL\t%s" % (this_func_name, proxy[1]))
-    _user_agent = random.choice(pc_browser_ua)
+    ua = random.choice(pc_browser_ua)
     l = []
     for index in range(retry, 0, -1):
-        result = get_html_content(logger, url, user_agent=_user_agent, proxy_pair=proxy)
+        result = get_html_content(logger, url, user_agent=ua, proxy_pair=proxy)
         if result[0] == -1:
             logger.debug("%s(): exception type\t%s" % (this_func_name, type(result[1])))
             if isinstance(result[1], (urllib.error.HTTPError, urllib.error.URLError, http.client.InvalidURL, http.client.UnknownProtocol, http.client.LineTooLong, TypeError)):
@@ -80,11 +81,12 @@ def get_proxy_delay(logger, url, protocol, ip, port, retry=4):
         l.append(result[0])
         logger.debug("%s(): index: %d\tresponse delay: %f" % (this_func_name, index, result[0]))
     logger.debug("%s(): response delay records\t%s" % (this_func_name, l))
+    average = None
     if len(l) > 0:
         average = round(sum(l)/len(l), 1)
         logger.debug("%s(): response delay average\t%f" % (this_func_name, average))
-        return average
-    return
+    logger.debug("%s(): end ..." % this_func_name)
+    return average
 
 
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ import http.client
 import urllib.parse, urllib.request, urllib.error
 
 from util.utility import merge_list_preserving_order
-from util.codec import Codec
+from util.encoding import Encoding
 
 
 pc_browser_ua = [
@@ -220,15 +220,15 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
             time_delta_in_ms = (time.time() - start_timestamp)*1000
             time_delta_in_ms = round(time_delta_in_ms, 1)
             logger.debug("%s(): after HTTPResponse.read() ..." % this_func_name)
-            encodings = Codec.encoding_list
+            encodings = Encoding.encoding_list
             encoding = response.headers.get_content_charset()
             logger.info("%s(): encoding\t%s" % (this_func_name, encoding))
             if encoding is not None:
-                encodings = merge_list_preserving_order([Codec.encoding_map.get(encoding, encoding)], Codec.encoding_list)
+                encodings = merge_list_preserving_order([Encoding.encoding_map.get(encoding, encoding)], Encoding.encoding_list)
             logger.info("%s(): encodings\t%s" % (this_func_name, encodings))
             html_content = None
             for encoding in encodings:
-                html_content = Codec.decode(logger, content, encoding)
+                html_content = Encoding.decode(logger, content, encoding)
                 if html_content is not None:
                     break
             # 最终返回值有可能为：[time_delta_in_ms, None]

@@ -6,6 +6,7 @@
 import sys
 import random
 import http.client
+import ssl
 import urllib.error
 import IP
 from bs4 import BeautifulSoup
@@ -74,7 +75,7 @@ def get_proxy_delay(logger, url, protocol, ip, port, retry=1):
         result = get_html_content(logger, url, user_agent=ua, proxy_pair=proxy)
         if result[0] == -1:
             logger.debug("%s(): exception type\t%s" % (this_func_name, type(result[1])))
-            if isinstance(result[1], (urllib.error.HTTPError, urllib.error.URLError, http.client.InvalidURL, http.client.UnknownProtocol, http.client.LineTooLong, TypeError)):
+            if isinstance(result[1], (urllib.error.HTTPError, urllib.error.URLError, http.client.InvalidURL, http.client.UnknownProtocol, http.client.LineTooLong, UnicodeError, ssl.CertificateError, TypeError)):
                 break
             else:
                 continue

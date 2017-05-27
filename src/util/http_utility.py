@@ -9,6 +9,7 @@ import json
 import time
 import socket
 import http.client
+import ssl
 import urllib.parse, urllib.request, urllib.error
 
 from util.utility import merge_list_preserving_order
@@ -273,6 +274,14 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
         logger.error("%s(): formatted URL\t\t%s" % (this_func_name, formatted_url))
         if retry > 0:
             return get_html_content(logger, formatted_url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
+        return -1, e
+    # 由 socket.py 的 _socket.getaddrinfo() 方法、idna.py 的 Codec.encode() 方法产生
+    except UnicodeError as e:
+        logger.error("%s(): UnicodeError\t%s" % (this_func_name, url))
+        return -1, e
+    # 由 ssl.py 的 match_hostname() 方法产生
+    except ssl.CertificateError as e:
+        logger.error("%s(): ssl.CertificateError\t%s" % (this_func_name, url))
         return -1, e
     except TypeError as e:
         logger.error("%s(): TypeError\t%s" % (this_func_name, url))

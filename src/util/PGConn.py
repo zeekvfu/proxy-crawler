@@ -39,6 +39,7 @@ class PGConn:
         logger.info("%s(): sql\t%s" % (this_func_name, sql))
         try:
             logger.debug("%s(): before execute() ..." % this_func_name)
+            # 程序有可能在这里阻塞，一直不返回。
             self.cur.execute(sql)
             logger.debug("%s(): after execute() ..." % this_func_name)
         except psycopg2.DataError as e:

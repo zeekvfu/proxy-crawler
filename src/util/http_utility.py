@@ -292,6 +292,9 @@ def get_html_content(logger, url, post_data=None, referer=None, user_agent=None,
         if retry > 0:
             return get_html_content(logger, url, post_data, referer, user_agent, proxy_pair, sleep_interval, retry)
         return -1, e
+    # exception stack: urllib.request.urlopen() -> http.client.parse_headers()
+    except http.client.HTTPException as e:
+       return -1, e
 
 
 if __name__ == '__main__':
